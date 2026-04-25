@@ -13,6 +13,8 @@ const SERVERS = [
 ];
 
 // ── Item Builders ──────────────────────────────────────────
+
+// RECURSOS RAW T2-T8
 const RAW = [
   {prefix:"FIBER",name:"Fibra"},{prefix:"WOOD",name:"Madera"},
   {prefix:"ORE",name:"Mineral"},{prefix:"HIDE",name:"Cuero"},{prefix:"ROCK",name:"Piedra"},
@@ -27,45 +29,142 @@ const buildRaw = () => RAW.flatMap(({prefix,name})=>
 const buildProc = () => PROC.flatMap(({prefix,name})=>
   Array.from({length:(prefix==="STONEBLOCK"?6:7)},(_,i)=>({id:`T${i+2}_${prefix}`,name:`${name} T${i+2}`,cat:"recurso",tier:i+2})));
 
+// ARMAS — todas T1-T8
 const WEAPON_LIST = [
   {id:"MAIN_SWORD",name:"Espada"},{id:"2H_CLAYMORE",name:"Mandoble"},
+  {id:"MAIN_SCIMITAR",name:"Cimitarra"},{id:"2H_DUALSWORD",name:"Espadas Duales"},
+  {id:"2H_CLEAVER",name:"Cuchilla"},
   {id:"MAIN_AXE",name:"Hacha"},{id:"2H_AXE",name:"Hacha 2M"},
+  {id:"2H_HALBERD",name:"Alabarda"},{id:"2H_GLAIVE",name:"Guadana"},
+  {id:"2H_POLEHAMMER",name:"Martillo Asta"},
   {id:"MAIN_MACE",name:"Maza"},{id:"2H_MACE",name:"Maza 2M"},
+  {id:"MAIN_HAMMER",name:"Martillo"},{id:"2H_HAMMER",name:"Martillo 2M"},
   {id:"MAIN_DAGGER",name:"Daga"},{id:"2H_DAGGERPAIR",name:"Dagas Dobles"},
-  {id:"2H_BOW",name:"Arco"},{id:"2H_CROSSBOW",name:"Ballesta"},
+  {id:"MAIN_RAPIER",name:"Estoque"},
   {id:"MAIN_SPEAR",name:"Lanza"},{id:"2H_SPEAR",name:"Lanza 2M"},
+  {id:"2H_PIKE",name:"Pica"},{id:"2H_TRIDENT",name:"Tridente"},
+  {id:"2H_BOW",name:"Arco"},{id:"2H_WARBOW",name:"Arco de Guerra"},
+  {id:"2H_LONGBOW",name:"Arco Largo"},
+  {id:"2H_CROSSBOW",name:"Ballesta"},{id:"MAIN_CROSSBOW",name:"Ballesta 1M"},
+  {id:"2H_HEAVYCROSSBOW",name:"Ballesta Pesada"},
   {id:"MAIN_FIRESTAFF",name:"Baston Fuego"},{id:"2H_FIRESTAFF",name:"Baston Fuego 2M"},
+  {id:"2H_INFERNOSTAFF",name:"Baston Infierno"},
   {id:"MAIN_HOLYSTAFF",name:"Baston Sagrado"},{id:"2H_HOLYSTAFF",name:"Baston Sagrado 2M"},
+  {id:"2H_DIVINESTAFF",name:"Baston Divino"},
   {id:"MAIN_ARCANESTAFF",name:"Baston Arcano"},{id:"2H_ARCANESTAFF",name:"Baston Arcano 2M"},
+  {id:"2H_ENIGMATICSTAFF",name:"Baston Enigmatico"},
   {id:"MAIN_FROSTSTAFF",name:"Baston Hielo"},{id:"2H_FROSTSTAFF",name:"Baston Hielo 2M"},
+  {id:"2H_ICICLESTAFF",name:"Baston Carabano"},
   {id:"MAIN_NATURESTAFF",name:"Baston Natura"},{id:"2H_NATURESTAFF",name:"Baston Natura 2M"},
-  {id:"2H_CURSEDSTAFF",name:"Baston Maldito"},{id:"MAIN_QUARTERSTAFF",name:"Baston Cuarteron"},
-  {id:"2H_HALBERD",name:"Alabarda"},{id:"2H_GLAIVE",name:"Guadaña"},
-  {id:"2H_HAMMER",name:"Martillo 2M"},{id:"MAIN_HAMMER",name:"Martillo"},
-  {id:"2H_WARBOW",name:"Arco de Guerra"},{id:"2H_INFERNOSTAFF",name:"Baston Infierno"},
+  {id:"2H_WILDSTAFF",name:"Baston Silvestre"},
+  {id:"2H_CURSEDSTAFF",name:"Baston Maldito"},{id:"MAIN_CURSEDSTAFF",name:"Baston Maldito 1M"},
+  {id:"2H_DEMONICSTAFF",name:"Baston Demonico"},
+  {id:"MAIN_QUARTERSTAFF",name:"Baston Cuarteron"},
+  {id:"MAIN_TORCH",name:"Antorcha MH"},
 ];
 const buildWeapons = () => WEAPON_LIST.flatMap(({id,name})=>
-  [4,5,6,7,8].map(t=>({id:`T${t}_${id}`,name:`${name} T${t}`,cat:"arma",tier:t})));
+  [1,2,3,4,5,6,7,8].map(t=>({id:`T${t}_${id}`,name:`${name} T${t}`,cat:"arma",tier:t})));
 
+// ARMADURAS — todos los sets T1-T8
 const ARMOR_LIST = [
-  {type:"HEAD_CLOTH_SET1",name:"Capucha Tela"},{type:"ARMOR_CLOTH_SET1",name:"Tunica"},
-  {type:"SHOES_CLOTH_SET1",name:"Sandalias"},{type:"HEAD_LEATHER_SET1",name:"Casco Cuero"},
-  {type:"ARMOR_LEATHER_SET1",name:"Armadura Cuero"},{type:"SHOES_LEATHER_SET1",name:"Botas Cuero"},
+  {type:"HEAD_CLOTH_SET1",name:"Capucha Tela"},{type:"ARMOR_CLOTH_SET1",name:"Tunica Tela"},
+  {type:"SHOES_CLOTH_SET1",name:"Sandalias Tela"},
+  {type:"HEAD_CLOTH_SET2",name:"Capucha Erudito"},{type:"ARMOR_CLOTH_SET2",name:"Tunica Erudito"},
+  {type:"SHOES_CLOTH_SET2",name:"Sandalias Erudito"},
+  {type:"HEAD_CLOTH_SET3",name:"Capucha Asceta"},{type:"ARMOR_CLOTH_SET3",name:"Tunica Asceta"},
+  {type:"SHOES_CLOTH_SET3",name:"Sandalias Asceta"},
+  {type:"HEAD_LEATHER_SET1",name:"Casco Cuero"},{type:"ARMOR_LEATHER_SET1",name:"Armadura Cuero"},
+  {type:"SHOES_LEATHER_SET1",name:"Botas Cuero"},
+  {type:"HEAD_LEATHER_SET2",name:"Casco Guarda"},{type:"ARMOR_LEATHER_SET2",name:"Armadura Guarda"},
+  {type:"SHOES_LEATHER_SET2",name:"Botas Guarda"},
+  {type:"HEAD_LEATHER_SET3",name:"Casco Merodeador"},{type:"ARMOR_LEATHER_SET3",name:"Armadura Merodeador"},
+  {type:"SHOES_LEATHER_SET3",name:"Botas Merodeador"},
   {type:"HEAD_PLATE_SET1",name:"Yelmo Placa"},{type:"ARMOR_PLATE_SET1",name:"Pecho Placa"},
   {type:"SHOES_PLATE_SET1",name:"Botas Placa"},
+  {type:"HEAD_PLATE_SET2",name:"Yelmo Guardian"},{type:"ARMOR_PLATE_SET2",name:"Pecho Guardian"},
+  {type:"SHOES_PLATE_SET2",name:"Botas Guardian"},
+  {type:"HEAD_PLATE_SET3",name:"Yelmo Caballero"},{type:"ARMOR_PLATE_SET3",name:"Pecho Caballero"},
+  {type:"SHOES_PLATE_SET3",name:"Botas Caballero"},
 ];
 const buildArmors = () => ARMOR_LIST.flatMap(({type,name})=>
-  [4,5,6,7,8].map(t=>({id:`T${t}_${type}`,name:`${name} T${t}`,cat:"armadura",tier:t})));
+  [1,2,3,4,5,6,7,8].map(t=>({id:`T${t}_${type}`,name:`${name} T${t}`,cat:"armadura",tier:t})));
 
+// OFF-HAND T1-T8
 const OFF_LIST = [
   {id:"OFF_SHIELD",name:"Escudo"},{id:"OFF_TORCH",name:"Antorcha"},
   {id:"OFF_HORN",name:"Cuerno"},{id:"OFF_BOOK",name:"Libro"},
   {id:"OFF_ORB",name:"Orbe"},{id:"OFF_DAGGER",name:"Daga Off"},
+  {id:"OFF_TOTEM",name:"Totem"},{id:"OFF_SKULL",name:"Craneo"},
+  {id:"OFF_LAMP",name:"Lampara"},
 ];
 const buildOffHand = () => OFF_LIST.flatMap(({id,name})=>
-  [4,5,6,7,8].map(t=>({id:`T${t}_${id}`,name:`${name} T${t}`,cat:"armadura",tier:t})));
+  [1,2,3,4,5,6,7,8].map(t=>({id:`T${t}_${id}`,name:`${name} T${t}`,cat:"offhand",tier:t})));
 
-const ALL_ITEMS = [...buildRaw(),...buildProc(),...buildWeapons(),...buildArmors(),...buildOffHand()];
+// MONTURAS T3-T8
+const MOUNT_LIST = [
+  {id:"MOUNT_HORSE",name:"Caballo"},{id:"MOUNT_ARMORED_HORSE",name:"Caballo Armado"},
+  {id:"MOUNT_GIANT_HORSE",name:"Caballo Gigante"},{id:"MOUNT_DIREWOLF",name:"Lobo Feroz"},
+  {id:"MOUNT_DIREBOAR",name:"Jabali Feroz"},{id:"MOUNT_DIREBEAR",name:"Oso Feroz"},
+  {id:"MOUNT_RAM",name:"Carnero"},{id:"MOUNT_ARMORED_WOLF",name:"Lobo Armado"},
+  {id:"MOUNT_OX",name:"Buey"},{id:"MOUNT_ARMORED_OX",name:"Buey Armado"},
+  {id:"MOUNT_SWAMPDRAGON",name:"Dragon Pantano"},
+];
+const buildMounts = () => MOUNT_LIST.flatMap(({id,name})=>
+  [3,4,5,6,7,8].map(t=>({id:`T${t}_${id}`,name:`${name} T${t}`,cat:"montura",tier:t})));
+
+// BOLSAS T1-T8
+const buildBags = () => [
+  ...[1,2,3,4,5,6,7,8].map(t=>({id:`T${t}_BAG`,name:`Bolsa T${t}`,cat:"accesorio",tier:t})),
+  ...[3,4,5,6,7,8].map(t=>({id:`T${t}_GATHERER_BAG`,name:`Mochila Recolector T${t}`,cat:"accesorio",tier:t})),
+  ...[4,5,6,7,8].map(t=>({id:`T${t}_SATCHEL_OF_INSIGHT`,name:`Morral Conocimiento T${t}`,cat:"accesorio",tier:t})),
+];
+
+// CAPAS DE CIUDAD T4-T5
+const buildCapes = () => {
+  const cities=[
+    {id:"BRIDGEWATCH",name:"Bridgewatch"},{id:"FORTSTERLING",name:"Fort Sterling"},
+    {id:"LYMHURST",name:"Lymhurst"},{id:"MARTLOCK",name:"Martlock"},
+    {id:"THETFORD",name:"Thetford"},{id:"CAERLEON",name:"Caerleon"},
+  ];
+  return cities.flatMap(c=>[4,5].map(t=>({id:`T${t}_CAPEITEM_FW_${c.id}`,name:`Capa ${c.name} T${t}`,cat:"accesorio",tier:t})));
+};
+
+// POCIONES T1-T7
+const POTION_LIST = [
+  {id:"POTION_HEALING",name:"Pocion Curacion"},{id:"POTION_ENERGY",name:"Pocion Energia"},
+  {id:"POTION_GIGANTIFY",name:"Pocion Gigante"},{id:"POTION_RESISTANCE",name:"Pocion Resistencia"},
+  {id:"POTION_SWIFTNESS",name:"Pocion Velocidad"},{id:"POTION_STICKY",name:"Pocion Pegajosa"},
+  {id:"POTION_POISON",name:"Pocion Veneno"},
+];
+const buildPotions = () => POTION_LIST.flatMap(({id,name})=>
+  [1,2,3,4,5,6,7].map(t=>({id:`T${t}_${id}`,name:`${name} T${t}`,cat:"consumible",tier:t})));
+
+// COMIDAS T2-T8
+const FOOD_LIST = [
+  {id:"MEAL_ROAST",name:"Asado"},{id:"MEAL_SALAD",name:"Ensalada"},
+  {id:"MEAL_SOUP",name:"Sopa"},{id:"MEAL_SANDWICH",name:"Sandwich"},
+  {id:"MEAL_PIE",name:"Pastel"},{id:"MEAL_OMELETTE",name:"Tortilla"},
+  {id:"MEAL_SEAWEEDSALAD",name:"Ensalada Algas"},
+];
+const buildFoods = () => FOOD_LIST.flatMap(({id,name})=>
+  [2,3,4,5,6,7,8].map(t=>({id:`T${t}_${id}`,name:`${name} T${t}`,cat:"consumible",tier:t})));
+
+// HERRAMIENTAS T1-T8
+const TOOL_LIST = [
+  {id:"2H_TOOL_SIEGEHAMMER",name:"Martillo Asedio"},{id:"2H_TOOL_SICKLE",name:"Hoz"},
+  {id:"2H_TOOL_AXE",name:"Hacha Tala"},{id:"2H_TOOL_SKINNKNIFE",name:"Cuchillo Desollador"},
+  {id:"2H_TOOL_HAMMER",name:"Pico Minero"},{id:"2H_TOOL_PICKAXE",name:"Pico"},
+];
+const buildTools = () => TOOL_LIST.flatMap(({id,name})=>
+  [1,2,3,4,5,6,7,8].map(t=>({id:`T${t}_${id}`,name:`${name} T${t}`,cat:"herramienta",tier:t})));
+
+// ALL ITEMS — sin duplicados
+const ALL_ITEMS = [...new Map([
+  ...buildRaw(),...buildProc(),...buildWeapons(),...buildArmors(),
+  ...buildOffHand(),...buildMounts(),...buildBags(),...buildCapes(),
+  ...buildPotions(),...buildFoods(),...buildTools(),
+].map(x=>[x.id,x])).values()];
+
 const TRANSPORT_ITEMS = [...buildRaw(),...buildProc()];
 
 // ── Craft Recipes ─────────────────────────────────────────
