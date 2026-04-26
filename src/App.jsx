@@ -69,7 +69,6 @@ const WEAPON_LIST = [
   {id:"MAIN_NATURESTAFF",name:"Baston Natura"},{id:"2H_NATURESTAFF",name:"Baston Natura 2M"},{id:"2H_WILDSTAFF",name:"Baston Silvestre"},
   {id:"2H_CURSEDSTAFF",name:"Baston Maldito"},{id:"MAIN_CURSEDSTAFF",name:"Baston Maldito 1M"},{id:"2H_DEMONICSTAFF",name:"Baston Demonico"},
   {id:"MAIN_QUARTERSTAFF",name:"Baston Cuarteron"},{id:"MAIN_TORCH",name:"Antorcha MH"},
-  // Nuevas armas añadidas
   {id:"2H_SHAPESHIFTER",name:"Bastón Metamorfo"},{id:"MAIN_SCYTHE",name:"Guadaña 1M"},
   {id:"2H_IRONCLADEDSTAFF",name:"Baston Acorazado"},{id:"2H_TWINBLADE",name:"Hoja Gemela"},
   {id:"2H_CAMLANN",name:"Camlann"},{id:"2H_KINGMAKER",name:"Hacedor de Reyes"},
@@ -87,13 +86,11 @@ const ARMOR_LIST = [
   {type:"HEAD_PLATE_SET1",name:"Yelmo Placa"},{type:"ARMOR_PLATE_SET1",name:"Pecho Placa"},{type:"SHOES_PLATE_SET1",name:"Botas Placa"},
   {type:"HEAD_PLATE_SET2",name:"Yelmo Guardian"},{type:"ARMOR_PLATE_SET2",name:"Pecho Guardian"},{type:"SHOES_PLATE_SET2",name:"Botas Guardian"},
   {type:"HEAD_PLATE_SET3",name:"Yelmo Caballero"},{type:"ARMOR_PLATE_SET3",name:"Pecho Caballero"},{type:"SHOES_PLATE_SET3",name:"Botas Caballero"},
-  // Armaduras de recolector
   {type:"HEAD_GATHERER_FIBER",name:"Casco Recolector Fibra"},{type:"ARMOR_GATHERER_FIBER",name:"Pecho Recolector Fibra"},{type:"SHOES_GATHERER_FIBER",name:"Botas Recolector Fibra"},
   {type:"HEAD_GATHERER_WOOD",name:"Casco Recolector Madera"},{type:"ARMOR_GATHERER_WOOD",name:"Pecho Recolector Madera"},{type:"SHOES_GATHERER_WOOD",name:"Botas Recolector Madera"},
   {type:"HEAD_GATHERER_ORE",name:"Casco Recolector Mineral"},{type:"ARMOR_GATHERER_ORE",name:"Pecho Recolector Mineral"},{type:"SHOES_GATHERER_ORE",name:"Botas Recolector Mineral"},
   {type:"HEAD_GATHERER_HIDE",name:"Casco Recolector Cuero"},{type:"ARMOR_GATHERER_HIDE",name:"Pecho Recolector Cuero"},{type:"SHOES_GATHERER_HIDE",name:"Botas Recolector Cuero"},
   {type:"HEAD_GATHERER_ROCK",name:"Casco Recolector Piedra"},{type:"ARMOR_GATHERER_ROCK",name:"Pecho Recolector Piedra"},{type:"SHOES_GATHERER_ROCK",name:"Botas Recolector Piedra"},
-  // Armaduras mercader/civil
   {type:"HEAD_MERCHANT",name:"Sombrero Mercader"},{type:"ARMOR_MERCHANT",name:"Ropa Mercader"},{type:"SHOES_MERCHANT",name:"Botas Mercader"},
 ];
 const buildArmors = () => ARMOR_LIST.flatMap(({type,name})=>
@@ -178,7 +175,6 @@ const TOOL_LIST = [
 const buildTools = () => TOOL_LIST.flatMap(({id,name})=>
   [1,2,3,4,5,6,7,8].map(t=>({id:`T${t}_${id}`,name:`${name} T${t}`,cat:"herramienta",tier:t})));
 
-// Accesorios extra
 const buildAccessories = () => [
   ...[4,5,6,7,8].map(t=>({id:`T${t}_AMULET_MORGANA`,name:`Amuleto Morgana T${t}`,cat:"accesorio",tier:t})),
   ...[4,5,6,7,8].map(t=>({id:`T${t}_RING_MORGANA`,name:`Anillo Morgana T${t}`,cat:"accesorio",tier:t})),
@@ -298,7 +294,6 @@ function calcConfidence(priceEntry) {
   if (!priceEntry) return 0;
   let score = 0;
 
-  // 1. Freshness (30 pts)
   const ageMs = priceEntry.sell_price_min_date
     ? Date.now() - new Date(priceEntry.sell_price_min_date).getTime()
     : Infinity;
@@ -309,18 +304,15 @@ function calcConfidence(priceEntry) {
   else if (ageMin < 60) score += 10;
   else score += 3;
 
-  // 2. Report Volume (25 pts)
   const vol = (priceEntry.sell_price_min_date && priceEntry.buy_price_max_date) ? 50 : 20;
   if (vol >= 100) score += 25;
   else if (vol >= 50) score += 18;
   else if (vol >= 20) score += 12;
   else score += 5;
 
-  // 3. Liquidity (20 pts) — approx from price being non-zero
   const hasLiquidity = priceEntry.sell_price_min > 0 && priceEntry.buy_price_max > 0;
   score += hasLiquidity ? 20 : 5;
 
-  // 4. Spread Stability (15 pts)
   if (priceEntry.sell_price_min > 0 && priceEntry.buy_price_max > 0) {
     const spread = (priceEntry.buy_price_max - priceEntry.sell_price_min) / priceEntry.sell_price_min * 100;
     if (spread < 3) score += 15;
@@ -329,7 +321,6 @@ function calcConfidence(priceEntry) {
     else score += 0;
   }
 
-  // 5. Price Consistency (10 pts) — basic check
   score += priceEntry.sell_price_min > 100 ? 10 : 3;
 
   return Math.min(100, score);
@@ -670,7 +661,6 @@ function FarmRoutesTab() {
   const [filter, setFilter] = useState("todos");
 
   const risks = ["todos", "bajo", "medio", "alto", "muy alto"];
-
   const filtered = filter === "todos" ? FARM_ZONES : FARM_ZONES.filter(z => z.risk === filter);
 
   return (
@@ -1073,13 +1063,19 @@ function ArbitrageTab({apiBase}){
   const fetchPrices=usePrices(apiBase);
   const [loading,setLoading]=useState(false);
   const [results,setResults]=useState([]);
-  const [minProfit,setMinProfit]=useState(5000);
-  const [minRoi,setMinRoi]=useState(5);
-  const [qty,setQty]=useState(500);
+  // FIX: usar string vacío como estado inicial para permitir borrar el campo
+  const [minProfit,setMinProfit]=useState("5000");
+  const [minRoi,setMinRoi]=useState("5");
+  const [qty,setQty]=useState("500");
   const [scanned,setScanned]=useState(false);
   const [progress,setProgress]=useState(0);
 
   const scan=async()=>{
+    // FIX: convertir a número de forma segura al momento de calcular
+    const qtyNum = Number(qty) || 0;
+    const minProfitNum = Number(minProfit) || 0;
+    const minRoiNum = Number(minRoi) || 0;
+
     setLoading(true);setResults([]);setScanned(false);setProgress(0);
     const allOpps=[];
     const BATCH=12;
@@ -1099,9 +1095,9 @@ function ArbitrageTab({apiBase}){
             if(buyEntry.city===sellEntry.city) return;
             const buyP=buyEntry.sell_price_min,sellP=sellEntry.buy_price_max;
             if(buyP<=0||sellP<=0) return;
-            const inv=buyP*qty,rev=sellP*qty,tax=rev*0.03,net=rev-tax-inv;
+            const inv=buyP*qtyNum,rev=sellP*qtyNum,tax=rev*0.03,net=rev-tax-inv;
             const roi=((net/inv)*100).toFixed(1);
-            if(net>=minProfit&&parseFloat(roi)>=minRoi){
+            if(net>=minProfitNum&&parseFloat(roi)>=minRoiNum){
               const meta=TRANSPORT_ITEMS.find(x=>x.id===itemId);
               const conf=calcConfidence(buyEntry);
               allOpps.push({id:itemId,name:meta?.name||itemId,cityBuy:buyEntry.city,citySell:sellEntry.city,buyPrice:buyP,sellPrice:sellP,inv:Math.round(inv),net:Math.round(net),roi:parseFloat(roi),perUnit:sellP-buyP,conf});
@@ -1121,9 +1117,10 @@ function ArbitrageTab({apiBase}){
       <SectionHeader title="📦 ARBITRAJE ENTRE CIUDADES" sub="Compra barato en una ciudad, vende caro en otra"/>
       <div className="card" style={{marginBottom:14}}>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:12,marginBottom:12}}>
-          <div><div className="label">Cantidad</div><input type="number" value={qty} onChange={e=>setQty(parseInt(e.target.value)||1)} onClick={e=>e.stopPropagation()}/></div>
-          <div><div className="label">Profit mínimo</div><input type="number" value={minProfit} onChange={e=>setMinProfit(parseInt(e.target.value)||0)} onClick={e=>e.stopPropagation()}/></div>
-          <div><div className="label">ROI mínimo %</div><input type="number" value={minRoi} onChange={e=>setMinRoi(parseInt(e.target.value)||0)} onClick={e=>e.stopPropagation()}/></div>
+          {/* FIX: onChange guarda el string directamente, sin parseInt */}
+          <div><div className="label">Cantidad</div><input type="number" value={qty} onChange={e=>setQty(e.target.value)} onClick={e=>e.stopPropagation()}/></div>
+          <div><div className="label">Profit mínimo</div><input type="number" value={minProfit} onChange={e=>setMinProfit(e.target.value)} onClick={e=>e.stopPropagation()}/></div>
+          <div><div className="label">ROI mínimo %</div><input type="number" value={minRoi} onChange={e=>setMinRoi(e.target.value)} onClick={e=>e.stopPropagation()}/></div>
         </div>
         <button className="btn" onClick={scan} disabled={loading} style={{width:"100%"}}>
           {loading?<><Spinner/>&nbsp; Escaneando ({progress}%)…</>:`🔍 ESCANEAR ARBITRAJE`}
@@ -1168,17 +1165,22 @@ function RefiningTab({apiBase}){
   const fetchPrices=usePrices(apiBase);
   const [tier,setTier]=useState(5);
   const [material,setMaterial]=useState("FIBER");
-  const [qty,setQty]=useState(100);
+  // FIX: estado como string para permitir borrar el campo
+  const [qty,setQty]=useState("100");
   const [focus,setFocus]=useState(false);
   const [result,setResult]=useState(null);
   const [loading,setLoading]=useState(false);
-  const [returnRate,setReturnRate]=useState(36.7);
+  const [returnRate,setReturnRate]=useState("36.7");
 
   const outMap={FIBER:"CLOTH",WOOD:"PLANKS",ORE:"METALBAR",HIDE:"LEATHER",ROCK:"STONEBLOCK"};
   const nameMap={FIBER:"Fibra",WOOD:"Madera",ORE:"Mineral",HIDE:"Cuero",ROCK:"Piedra"};
   const outNameMap={CLOTH:"Tela",PLANKS:"Tablas",METALBAR:"Barra Metal",LEATHER:"Cuero Proc",STONEBLOCK:"Bloque Piedra"};
 
   const calc=async()=>{
+    // FIX: convertir a número de forma segura al calcular
+    const qtyNum = Number(qty) || 0;
+    const returnRateNum = Number(returnRate) || 0;
+
     setLoading(true);setResult(null);
     const outPrefix=outMap[material];
     const ids=`T${tier}_${material},T${tier}_${outPrefix},T${tier-1}_${outPrefix}`;
@@ -1193,16 +1195,16 @@ function RefiningTab({apiBase}){
     const lowerTier=p[`T${tier-1}_${outPrefix}`]?.buy||0;
     const sellPrice=p[`T${tier}_${outPrefix}`]?.sell||0;
     const fee={3:50,4:100,5:200,6:400,7:800,8:1600}[tier]||0;
-    const actualReturn=focus?returnRate:returnRate*0.5;
-    const returnedMats=Math.floor(qty*8*(actualReturn/100));
-    const rawCost=rawPrice*qty*8;
+    const actualReturn=focus?returnRateNum:returnRateNum*0.5;
+    const returnedMats=Math.floor(qtyNum*8*(actualReturn/100));
+    const rawCost=rawPrice*qtyNum*8;
     const lowerCost=lowerTier*returnedMats;
-    const totalCost=rawCost-lowerCost+(fee*qty);
-    const revenue=sellPrice*qty;
+    const totalCost=rawCost-lowerCost+(fee*qtyNum);
+    const revenue=sellPrice*qtyNum;
     const tax=revenue*0.03;
     const net=revenue-tax-totalCost;
     const roi=totalCost>0?((net/totalCost)*100).toFixed(1):0;
-    setResult({rawPrice,sellPrice,lowerTier,rawCost:Math.round(rawCost),fee:fee*qty,totalCost:Math.round(totalCost),revenue:Math.round(revenue),tax:Math.round(tax),net:Math.round(net),roi,returnedMats,rawMaterial:`T${tier}_${material}`,outItem:`T${tier}_${outPrefix}`});
+    setResult({rawPrice,sellPrice,lowerTier,rawCost:Math.round(rawCost),fee:fee*qtyNum,totalCost:Math.round(totalCost),revenue:Math.round(revenue),tax:Math.round(tax),net:Math.round(net),roi,returnedMats,rawMaterial:`T${tier}_${material}`,outItem:`T${tier}_${outPrefix}`});
     setLoading(false);
   };
 
@@ -1213,10 +1215,12 @@ function RefiningTab({apiBase}){
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:12,marginBottom:12}}>
           <div><div className="label">Material</div><select value={material} onChange={e=>setMaterial(e.target.value)}>{Object.entries(nameMap).map(([k,v])=><option key={k} value={k}>{v}</option>)}</select></div>
           <div><div className="label">Tier</div><select value={tier} onChange={e=>setTier(parseInt(e.target.value))}>{[3,4,5,6,7,8].filter(t=>!(material==="ROCK"&&t===8)).map(t=><option key={t} value={t}>T{t}</option>)}</select></div>
-          <div><div className="label">Cantidad a refinar</div><input type="number" value={qty} onChange={e=>setQty(parseInt(e.target.value)||1)} onClick={e=>e.stopPropagation()}/></div>
+          {/* FIX: onChange sin parseInt, guarda string */}
+          <div><div className="label">Cantidad a refinar</div><input type="number" value={qty} onChange={e=>setQty(e.target.value)} onClick={e=>e.stopPropagation()}/></div>
         </div>
         <div style={{display:"flex",gap:12,alignItems:"center",marginBottom:12}}>
-          <div style={{flex:1}}><div className="label">Tasa de retorno (%)</div><input type="number" value={returnRate} onChange={e=>setReturnRate(parseFloat(e.target.value)||0)} onClick={e=>e.stopPropagation()} step="0.1"/></div>
+          {/* FIX: tasa de retorno también como string */}
+          <div style={{flex:1}}><div className="label">Tasa de retorno (%)</div><input type="number" value={returnRate} onChange={e=>setReturnRate(e.target.value)} onClick={e=>e.stopPropagation()} step="0.1"/></div>
           <div style={{display:"flex",gap:8,alignItems:"center",marginTop:16}}>
             <div onClick={()=>setFocus(f=>!f)} style={{width:40,height:22,background:focus?"#f59e0b":"#27272a",borderRadius:11,position:"relative",cursor:"pointer",transition:"background .2s"}}>
               <div style={{width:16,height:16,background:"#fff",borderRadius:"50%",position:"absolute",top:3,left:focus?21:3,transition:"left .2s"}}/>
@@ -1257,27 +1261,36 @@ function RefiningTab({apiBase}){
 
 // ── Focus Tab ─────────────────────────────────────────────
 function FocusTab(){
-  const [focusMax,setFocusMax]=useState(30000);
-  const [focusRegen,setFocusRegen]=useState(10000);
-  const [focusCost,setFocusCost]=useState(1000);
-  const [bonus,setBonus]=useState(43.5);
-  const [craft,setCraft]=useState(50);
+  // FIX: todos los inputs numéricos como string
+  const [focusMax,setFocusMax]=useState("30000");
+  const [focusRegen,setFocusRegen]=useState("10000");
+  const [focusCost,setFocusCost]=useState("1000");
+  const [bonus,setBonus]=useState("43.5");
+  const [craft,setCraft]=useState("50");
 
-  const sessionsPerDay=focusRegen>0?Math.floor(focusMax/focusRegen):1;
-  const craftsWithFocus=Math.floor(focusMax/focusCost);
-  const profitBonus=craftsWithFocus*(bonus/100)*craft;
-  const focusEfficiency=(focusRegen/focusMax*100).toFixed(1);
+  // FIX: convertir a número de forma segura para los cálculos
+  const focusMaxNum = Number(focusMax) || 0;
+  const focusRegenNum = Number(focusRegen) || 0;
+  const focusCostNum = Number(focusCost) || 0;
+  const bonusNum = Number(bonus) || 0;
+  const craftNum = Number(craft) || 0;
+
+  const sessionsPerDay=focusRegenNum>0?Math.floor(focusMaxNum/focusRegenNum):1;
+  const craftsWithFocus=focusCostNum>0?Math.floor(focusMaxNum/focusCostNum):0;
+  const profitBonus=craftsWithFocus*(bonusNum/100)*craftNum;
+  const focusEfficiency=focusMaxNum>0?(focusRegenNum/focusMaxNum*100).toFixed(1):"0.0";
 
   return(
     <div>
       <SectionHeader title="🎯 CALCULADORA DE FOCUS" sub="Optimiza el uso de tu Focus para máximo profit"/>
       <div className="card" style={{marginBottom:14}}>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
-          <div><div className="label">Focus máximo</div><input type="number" value={focusMax} onChange={e=>setFocusMax(parseInt(e.target.value)||0)} onClick={e=>e.stopPropagation()}/></div>
-          <div><div className="label">Regeneración diaria</div><input type="number" value={focusRegen} onChange={e=>setFocusRegen(parseInt(e.target.value)||0)} onClick={e=>e.stopPropagation()}/></div>
-          <div><div className="label">Costo focus por craft</div><input type="number" value={focusCost} onChange={e=>setFocusCost(parseInt(e.target.value)||0)} onClick={e=>e.stopPropagation()}/></div>
-          <div><div className="label">Bonus retorno % (con focus)</div><input type="number" step="0.1" value={bonus} onChange={e=>setBonus(parseFloat(e.target.value)||0)} onClick={e=>e.stopPropagation()}/></div>
-          <div style={{gridColumn:"1/-1"}}><div className="label">Profit por craft (silver)</div><input type="number" value={craft} onChange={e=>setCraft(parseInt(e.target.value)||0)} onClick={e=>e.stopPropagation()}/></div>
+          {/* FIX: onChange guarda string directamente */}
+          <div><div className="label">Focus máximo</div><input type="number" value={focusMax} onChange={e=>setFocusMax(e.target.value)} onClick={e=>e.stopPropagation()}/></div>
+          <div><div className="label">Regeneración diaria</div><input type="number" value={focusRegen} onChange={e=>setFocusRegen(e.target.value)} onClick={e=>e.stopPropagation()}/></div>
+          <div><div className="label">Costo focus por craft</div><input type="number" value={focusCost} onChange={e=>setFocusCost(e.target.value)} onClick={e=>e.stopPropagation()}/></div>
+          <div><div className="label">Bonus retorno % (con focus)</div><input type="number" step="0.1" value={bonus} onChange={e=>setBonus(e.target.value)} onClick={e=>e.stopPropagation()}/></div>
+          <div style={{gridColumn:"1/-1"}}><div className="label">Profit por craft (silver)</div><input type="number" value={craft} onChange={e=>setCraft(e.target.value)} onClick={e=>e.stopPropagation()}/></div>
         </div>
       </div>
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))",gap:12}}>
@@ -1308,11 +1321,20 @@ function FocusTab(){
 
 // ── Break Even Tab ────────────────────────────────────────
 function BreakEvenTab(){
-  const [cost,setCost]=useState("");const [tax,setTax]=useState(3);
-  const [qty,setQty]=useState(1);const [desired,setDesired]=useState("");
+  // FIX: todos los inputs como string
+  const [cost,setCost]=useState("");
+  const [tax,setTax]=useState("3");
+  const [qty,setQty]=useState("1");
+  const [desired,setDesired]=useState("");
 
-  const breakEvenPrice=cost&&qty?(parseFloat(cost)/(parseInt(qty)||1)/(1-tax/100)).toFixed(0):null;
-  const profitAtDesired=desired&&cost&&qty?Math.round((parseFloat(desired)*(1-tax/100)-parseFloat(cost)/parseInt(qty||1))*parseInt(qty||1)):null;
+  // FIX: conversión segura para cálculos
+  const costNum = Number(cost) || 0;
+  const taxNum = Number(tax) || 0;
+  const qtyNum = Number(qty) || 1;
+  const desiredNum = Number(desired) || 0;
+
+  const breakEvenPrice=cost&&qtyNum?(costNum/qtyNum/(1-taxNum/100)).toFixed(0):null;
+  const profitAtDesired=desired&&cost&&qtyNum?Math.round((desiredNum*(1-taxNum/100)-costNum/qtyNum)*qtyNum):null;
 
   return(
     <div>
@@ -1323,7 +1345,8 @@ function BreakEvenTab(){
           <div style={{display:"grid",gap:10}}>
             <div><div className="label">Costo total inversión</div><input type="number" placeholder="500000" value={cost} onChange={e=>setCost(e.target.value)} onClick={e=>e.stopPropagation()}/></div>
             <div><div className="label">Cantidad de items</div><input type="number" placeholder="100" value={qty} onChange={e=>setQty(e.target.value)} onClick={e=>e.stopPropagation()}/></div>
-            <div><div className="label">Tax % del mercado</div><input type="number" placeholder="3" value={tax} onChange={e=>setTax(parseFloat(e.target.value)||0)} onClick={e=>e.stopPropagation()} step="0.1"/></div>
+            {/* FIX: tax también como string */}
+            <div><div className="label">Tax % del mercado</div><input type="number" placeholder="3" value={tax} onChange={e=>setTax(e.target.value)} onClick={e=>e.stopPropagation()} step="0.1"/></div>
           </div>
           {breakEvenPrice&&(<div style={{marginTop:14,padding:14,background:"#422006",border:"1px solid #f59e0b44",borderRadius:8,textAlign:"center"}}><div className="label">Precio mínimo de venta</div><div style={{fontSize:28,fontWeight:700,color:"#f59e0b",fontFamily:"Oswald"}}>{fmt(parseInt(breakEvenPrice))}</div></div>)}
         </div>
@@ -1343,7 +1366,8 @@ function BreakEvenTab(){
 // ── Craft vs Buy Tab ──────────────────────────────────────
 function CraftVsBuyTab({apiBase}){
   const fetchPrices=usePrices(apiBase);
-  const [qty,setQty]=useState(10);
+  // FIX: estado como string
+  const [qty,setQty]=useState("10");
   const [loading,setLoading]=useState(false);
   const [result,setResult]=useState(null);
   const [search,setSearch]=useState("");
@@ -1352,6 +1376,9 @@ function CraftVsBuyTab({apiBase}){
   const filtered=craftable.filter(r=>r.name.toLowerCase().includes(search.toLowerCase())).slice(0,15);
 
   const analyze=async(recipe)=>{
+    // FIX: convertir a número seguro al calcular
+    const qtyNum = Number(qty) || 0;
+
     setLoading(true);setResult(null);
     const ids=[recipe.id,...recipe.mat.map(m=>m.id)].join(",");
     const data=await fetchPrices(ids);
@@ -1362,11 +1389,11 @@ function CraftVsBuyTab({apiBase}){
       if(e.buy_price_max>0)p[e.item_id].sell=Math.max(p[e.item_id].sell||0,e.buy_price_max);
     });
     let matCost=0;
-    for(const m of recipe.mat){matCost+=(p[m.id]?.buy||0)*m.qty*qty;}
-    const fee=recipe.fee*qty;
+    for(const m of recipe.mat){matCost+=(p[m.id]?.buy||0)*m.qty*qtyNum;}
+    const fee=recipe.fee*qtyNum;
     const craftCost=matCost+fee;
-    const buyPrice=(p[recipe.id]?.buy||0)*qty;
-    const sellPrice=(p[recipe.id]?.sell||0)*qty;
+    const buyPrice=(p[recipe.id]?.buy||0)*qtyNum;
+    const sellPrice=(p[recipe.id]?.sell||0)*qtyNum;
     const craftSellRevenue=sellPrice*(1-0.03);
     const craftProfit=craftSellRevenue-craftCost;
     const buyAndSellProfit=craftSellRevenue-buyPrice;
@@ -1396,7 +1423,8 @@ function CraftVsBuyTab({apiBase}){
             ))}
           </div>
         )}
-        <div><div className="label">Cantidad</div><input type="number" value={qty} onChange={e=>setQty(parseInt(e.target.value)||1)} onClick={e=>e.stopPropagation()}/></div>
+        {/* FIX: onChange sin parseInt */}
+        <div><div className="label">Cantidad</div><input type="number" value={qty} onChange={e=>setQty(e.target.value)} onClick={e=>e.stopPropagation()}/></div>
       </div>
       {loading&&<div style={{textAlign:"center",padding:30}}><Spinner size={28}/></div>}
       {result&&(
@@ -1712,13 +1740,17 @@ function SessionTab(){
 function TransportTab({apiBase}){
   const fetchPrices=usePrices(apiBase);
   const [itemId,setItemId]=useState("T5_FIBER");
-  const [qty,setQty]=useState(1000);
+  // FIX: estado como string
+  const [qty,setQty]=useState("1000");
   const [fromCity,setFromCity]=useState("Lymhurst");
   const [loading,setLoading]=useState(false);
   const [results,setResults]=useState(null);
   const [error,setError]=useState(null);
 
   const analyze=async()=>{
+    // FIX: conversión segura al calcular
+    const qtyNum = Number(qty) || 0;
+
     setLoading(true);setError(null);setResults(null);
     const data=await fetchPrices(itemId);
     const byCity={};
@@ -1726,13 +1758,13 @@ function TransportTab({apiBase}){
     data.forEach(p=>{if(!byCity[p.city]) return;if(p.sell_price_min>0)byCity[p.city].buy=p.sell_price_min;if(p.buy_price_max>0)byCity[p.city].sell=p.buy_price_max;});
     const originBuy=byCity[fromCity]?.buy;
     if(!originBuy){setError("No hay precio de compra en ciudad origen.");setLoading(false);return;}
-    const inv=originBuy*qty;
+    const inv=originBuy*qtyNum;
     const options=CITIES.filter(c=>c!==fromCity).map(dest=>{
       const sellP=byCity[dest]?.sell;if(!sellP)return null;
-      const rev=sellP*qty,tax=rev*0.03,net=rev-tax-inv,roi=((net/inv)*100).toFixed(1);
+      const rev=sellP*qtyNum,tax=rev*0.03,net=rev-tax-inv,roi=((net/inv)*100).toFixed(1);
       return{city:dest,sellPrice:sellP,revenue:Math.round(rev),tax:Math.round(tax),net:Math.round(net),roi:parseFloat(roi),silverPerItem:sellP-originBuy};
     }).filter(Boolean).sort((a,b)=>b.net-a.net);
-    setResults({options,originBuy,inv:Math.round(inv),itemName:TRANSPORT_ITEMS.find(i=>i.id===itemId)?.name||itemId,qty,fromCity});
+    setResults({options,originBuy,inv:Math.round(inv),itemName:TRANSPORT_ITEMS.find(i=>i.id===itemId)?.name||itemId,qty:qtyNum,fromCity});
     setLoading(false);
   };
   const best=results?.options?.[0];
@@ -1743,7 +1775,8 @@ function TransportTab({apiBase}){
       <div className="card" style={{marginBottom:14}}>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:12}}>
           <div style={{gridColumn:"1/-1"}}><div className="label">Item</div><select value={itemId} onChange={e=>setItemId(e.target.value)}>{TRANSPORT_ITEMS.map(i=><option key={i.id} value={i.id}>{i.name}</option>)}</select></div>
-          <div><div className="label">Cantidad</div><input type="number" value={qty} onChange={e=>setQty(parseInt(e.target.value)||1)} onClick={e=>e.stopPropagation()}/></div>
+          {/* FIX: onChange sin parseInt */}
+          <div><div className="label">Cantidad</div><input type="number" value={qty} onChange={e=>setQty(e.target.value)} onClick={e=>e.stopPropagation()}/></div>
           <div><div className="label">Ciudad origen</div><select value={fromCity} onChange={e=>setFromCity(e.target.value)}>{CITIES.map(c=><option key={c}>{c}</option>)}</select></div>
         </div>
         <button className="btn" onClick={analyze} disabled={loading} style={{width:"100%"}}>
@@ -1875,14 +1908,22 @@ function BlackZoneTab(){
 
 // ── Profit Calc Tab ───────────────────────────────────────
 function ProfitCalcTab(){
-  const [buy,setBuy]=useState("");const [sell,setSell]=useState("");
-  const [tax,setTax]=useState(3);const [qty,setQty]=useState(1);
+  // FIX: todos los inputs como string
+  const [buy,setBuy]=useState("");
+  const [sell,setSell]=useState("");
+  const [tax,setTax]=useState("3");
+  const [qty,setQty]=useState("1");
   const [result,setResult]=useState(null);
 
   const calc=()=>{
-    const b=parseFloat(buy),s=parseFloat(sell),t=parseFloat(tax)/100,q=parseInt(qty)||1;
-    if(isNaN(b)||isNaN(s)) return;
-    const gross=(s-b)*q,taxAmt=s*t*q,net=gross-taxAmt;
+    // FIX: conversión segura al calcular
+    const b=Number(buy)||0;
+    const s=Number(sell)||0;
+    const t=Number(tax)||0;
+    const q=Number(qty)||1;
+
+    if(!buy||!sell) return;
+    const gross=(s-b)*q,taxAmt=s*(t/100)*q,net=gross-taxAmt;
     setResult({net:Math.round(net),roi:((net/(b*q))*100).toFixed(1),tax:Math.round(taxAmt),gross:Math.round(gross)});
   };
 
@@ -1891,6 +1932,7 @@ function ProfitCalcTab(){
       <SectionHeader title="💰 CALCULADORA DE PROFIT" sub="Ganancia neta con impuestos incluidos"/>
       <div className="card" style={{marginBottom:14}}>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:12}}>
+          {/* FIX: onChange guarda string directamente */}
           <div><div className="label">Precio compra</div><input type="number" placeholder="0" value={buy} onChange={e=>setBuy(e.target.value)} onClick={e=>e.stopPropagation()}/></div>
           <div><div className="label">Precio venta</div><input type="number" placeholder="0" value={sell} onChange={e=>setSell(e.target.value)} onClick={e=>e.stopPropagation()}/></div>
           <div><div className="label">Tax % (3% default)</div><input type="number" placeholder="3" value={tax} onChange={e=>setTax(e.target.value)} onClick={e=>e.stopPropagation()}/></div>
@@ -1909,7 +1951,7 @@ function ProfitCalcTab(){
             ))}
           </div>
           <div style={{padding:12,background:result.net>0?"#052e16":"#450a0a",borderRadius:8,fontSize:13,color:result.net>0?"#4ade80":"#f87171"}}>
-            {result.net>0?`✅ Rentable. Ganancia por cada 1000 items: ${fmt(Math.round(result.net/Math.max(parseInt(qty),1)*1000))} silver.`:"❌ Pérdidas. Busca mejor precio."}
+            {result.net>0?`✅ Rentable. Ganancia por cada 1000 items: ${fmt(Math.round(result.net/Math.max(Number(qty)||1,1)*1000))} silver.`:"❌ Pérdidas. Busca mejor precio."}
           </div>
         </div>
       )}
@@ -1917,7 +1959,7 @@ function ProfitCalcTab(){
   );
 }
 
-// ── Confidence Score Tab (nuevo) ──────────────────────────
+// ── Confidence Score Tab ──────────────────────────────────
 function ConfidenceTab({ apiBase }) {
   const fetchPrices = usePrices(apiBase);
   const [itemId, setItemId] = useState("T6_FIBER");
@@ -2042,7 +2084,6 @@ function DashboardTab({apiBase}){
         <div style={{fontSize:13,color:"#52525b"}}>Panel principal · precios en tiempo real · v6.0</div>
       </div>
 
-      {/* Confidence Score Banner */}
       <div style={{marginBottom:16,padding:"12px 18px",background:"linear-gradient(135deg,#0a0a1a,#0d0d0d)",border:"1px solid #a78bfa33",borderRadius:12,display:"flex",alignItems:"center",gap:12}}>
         <span style={{fontSize:24}}>🧠</span>
         <div style={{flex:1}}>
