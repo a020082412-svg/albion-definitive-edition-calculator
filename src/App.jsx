@@ -1,6 +1,23 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import CommunityPricePanel from './components/CommunityPricePanel';
+import {Routes, Route} from "react-router-dom";
+import Terms from "./Terms";
+import Privacy from "./Privacy";
+import Disclaimer from "./Disclaimer";
+function Home(){
+ return <AlbionJarvis />
+}
 
+export default function App(){
+return(
+<Routes>
+<Route path="/" element={<Home />} />
+<Route path="/terms" element={<Terms />} />
+<Route path="/privacy" element={<Privacy />} />
+<Route path="/disclaimer" element={<Disclaimer />} />
+</Routes>
+)
+}
 /* ═══════════════════════════════════════════════════════════
 
    ALBION JARVIS v6.0 — ECONOMIC INTELLIGENCE SUITE
@@ -4083,7 +4100,7 @@ function EmptyState({icon,text}){
 
 ═══════════════════════════════════════════════════════════ */
 
-export default function AlbionJarvis(){
+ function AlbionJarvis(){
 
   const [server,setServer]=useState("west");
 
@@ -4354,7 +4371,26 @@ export default function AlbionJarvis(){
         </div>
 
       </div>
+<footer
+style={{
+marginTop:"80px",
+padding:"30px",
+textAlign:"center",
+borderTop:"1px solid #333"
+}}
+>
 
+<p>
+© 2026 Albion Jarvis • Fan-made tool not affiliated with Sandbox Interactive
+</p>
+
+<div style={{marginTop:"10px"}}>
+<a href="/terms">Terms</a>{" | "}
+<a href="/privacy">Privacy</a>{" | "}
+<a href="/disclaimer">Disclaimer</a>
+</div>
+
+</footer>
     </div>
 
   );

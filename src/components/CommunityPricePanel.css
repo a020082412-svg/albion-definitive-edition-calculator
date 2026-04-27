@@ -1,0 +1,255 @@
+/* ============================================================
+   CommunityPricePanel.css
+   Dark, medieval-market aesthetic for Albion Online calculator
+   ============================================================ */
+
+.cpp-panel {
+  background: linear-gradient(135deg, #1a1208 0%, #0f0c05 100%);
+  border: 1px solid #4a3a1a;
+  border-radius: 10px;
+  padding: 16px;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  color: #e8d5a3;
+  min-width: 260px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 200, 80, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.cpp-panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #c8902a, transparent);
+}
+
+/* Header */
+.cpp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.cpp-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #c8902a;
+}
+
+.cpp-refresh {
+  background: none;
+  border: 1px solid #4a3a1a;
+  color: #a08040;
+  cursor: pointer;
+  font-size: 16px;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  padding: 0;
+}
+
+.cpp-refresh:hover:not(:disabled) {
+  border-color: #c8902a;
+  color: #c8902a;
+  background: rgba(200, 144, 42, 0.08);
+}
+
+.cpp-refresh:disabled {
+  opacity: 0.5;
+  animation: cpp-spin 1s linear infinite;
+}
+
+@keyframes cpp-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Price display */
+.cpp-prices {
+  margin-bottom: 10px;
+}
+
+.cpp-loading {
+  text-align: center;
+  color: #7a6a3a;
+  font-size: 13px;
+  padding: 16px 0;
+}
+
+.cpp-error {
+  color: #e06060;
+  font-size: 12px;
+  padding: 10px 0;
+  text-align: center;
+}
+
+.cpp-no-data,
+.cpp-insufficient {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 0;
+  font-size: 13px;
+  color: #9a8a5a;
+}
+
+.cpp-no-data-icon { font-size: 20px; }
+
+.cpp-no-data-sub {
+  font-size: 11px;
+  color: #6a5a3a;
+}
+
+/* Price row */
+.cpp-price-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.cpp-price-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+}
+
+.cpp-price-item label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #7a6a3a;
+  font-weight: 600;
+}
+
+.cpp-price-value {
+  font-size: 22px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.cpp-buy { color: #60b0ff; }
+.cpp-sell { color: #60d080; }
+
+.cpp-divider {
+  width: 1px;
+  height: 36px;
+  background: #3a2a0a;
+}
+
+/* Meta info */
+.cpp-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.cpp-status {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-good  { color: #60d080; }
+.status-medium { color: #e0c060; }
+.status-low   { color: #e0a040; }
+.status-none  { color: #e06060; }
+
+.cpp-samples {
+  font-size: 11px;
+  color: #7a6a3a;
+  display: flex;
+  gap: 4px;
+}
+
+.cpp-separator { opacity: 0.4; }
+
+.cpp-update {
+  font-size: 10px;
+  color: #5a4a2a;
+  font-style: italic;
+}
+
+/* Confidence bar */
+.cpp-confidence-bar {
+  height: 3px;
+  background: #2a1a0a;
+  border-radius: 2px;
+  margin: 10px 0;
+  overflow: hidden;
+}
+
+.cpp-confidence-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #c8902a, #60d080);
+  border-radius: 2px;
+  transition: width 0.6s ease;
+}
+
+/* Report button */
+.cpp-actions {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cpp-report-btn {
+  width: 100%;
+  padding: 9px 14px;
+  border-radius: 7px;
+  border: 1px solid #4a3a1a;
+  background: linear-gradient(135deg, #2a1a08, #1a1005);
+  color: #c8902a;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  transition: all 0.15s;
+}
+
+.cpp-report-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #3a2a10, #2a1a08);
+  border-color: #c8902a;
+  color: #e0b050;
+  box-shadow: 0 0 12px rgba(200, 144, 42, 0.2);
+}
+
+.cpp-report-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.cpp-report-btn.success {
+  border-color: #60d080;
+  color: #60d080;
+  background: rgba(96, 208, 128, 0.06);
+}
+
+.cpp-report-btn.error {
+  border-color: #e06060;
+  color: #e06060;
+  background: rgba(224, 96, 96, 0.06);
+}
+
+.cpp-report-msg {
+  font-size: 11px;
+  text-align: center;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.cpp-report-msg.success { color: #60d080; }
+.cpp-report-msg.error   { color: #e06060; background: rgba(224,96,96,0.06); }
